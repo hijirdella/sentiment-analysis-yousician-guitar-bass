@@ -37,7 +37,7 @@ if input_mode == "📝 Input Manual":
     star_rating = st.selectbox("⭐ Rating Bintang:", [1, 2, 3, 4, 5])
     user_review = st.text_area("💬 Tulis Review Pengguna:")
 
-    review_day = st.date_input("📅 Tanggal:", value=now_wib.date())
+    review_day = st.date_input("🗕️ Tanggal:", value=now_wib.date())
     review_time = st.time_input("⏰ Waktu:", value=now_wib.time())
 
     review_datetime = datetime.combine(review_day, review_time)
@@ -63,7 +63,7 @@ if input_mode == "📝 Input Manual":
             st.dataframe(result_df, use_container_width=True)
 
             st.download_button(
-                label="📥 Unduh Hasil sebagai CSV",
+                label="📅 Unduh Hasil sebagai CSV",
                 data=result_df.to_csv(index=False).encode('utf-8'),
                 file_name="hasil_prediksi_manual_Yousician_Guitar_Bass.csv",
                 mime="text/csv"
@@ -130,8 +130,10 @@ else:
 
                 for bar in bars:
                     height = bar.get_height()
+                    formatted = format(int(height), ',').replace(',', '.')
                     ax_bar.text(bar.get_x() + bar.get_width()/2, height + 0.5,
-                                f"{int(height)}", ha='center', va='bottom')
+                                formatted, ha='center', va='bottom', fontsize=10)
+
                 ax_bar.set_ylabel("Jumlah")
                 ax_bar.set_xlabel("Sentimen")
                 ax_bar.set_title("Distribusi Sentimen – Yousician: Learn Guitar & Bass")
@@ -142,18 +144,23 @@ else:
                 pie_data = sentimen_bahasa.value_counts()
                 pie_colors = [color_map.get(sent, 'gray') for sent in pie_data.index]
 
+                def autopct_format(pct, allvals):
+                    absolute = int(round(pct / 100. * sum(allvals)))
+                    formatted = format(absolute, ',').replace(',', '.')
+                    return f"{pct:.1f}%\n({formatted})"
+
                 fig_pie, ax_pie = plt.subplots()
                 ax_pie.pie(
                     pie_data,
                     labels=pie_data.index,
                     colors=pie_colors,
-                    autopct=lambda pct: f"{pct:.1f}%\n({int(round(pct/100*sum(pie_data)))})",
+                    autopct=lambda pct: autopct_format(pct, pie_data),
                     startangle=90
                 )
                 ax_pie.axis('equal')
                 st.pyplot(fig_pie)
 
-                # === Classification Report (jika ada label asli) ===
+                # === Classification Report ===
                 if 'true_sentiment' in df.columns:
                     st.subheader("📈 Evaluasi Model (Jika Ada Label Asli)")
                     y_true = label_encoder.transform(df['true_sentiment'])
@@ -176,7 +183,7 @@ else:
                 # === Unduh CSV ===
                 csv_result = filtered_df.to_csv(index=False).encode('utf-8')
                 st.download_button(
-                    label="📥 Unduh Hasil CSV",
+                    label="📅 Unduh Hasil CSV",
                     data=csv_result,
                     file_name="hasil_prediksi_Yousician_Guitar_Bass.csv",
                     mime="text/csv"
