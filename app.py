@@ -8,9 +8,9 @@ from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 
 # === Load model dan komponen ===
-model = joblib.load('LogisticRegression - Yousician: Learn Guitar & Bass.pkl')
-vectorizer = joblib.load('tfidf_vectorizer_Yousician: Learn Guitar & Bass.pkl')
-label_encoder = joblib.load('label_encoder_Yousician: Learn Guitar & Bass.pkl')
+model = joblib.load('LogisticRegression - Yousician Learn Guitar & Bass.pkl')
+vectorizer = joblib.load('tfidf_vectorizer_Yousician Learn Guitar & Bass.pkl')
+label_encoder = joblib.load('label_encoder_Yousician Learn Guitar & Bass.pkl')
 
 # === Mapping label dan warna ===
 label_map = {'positive': 'Positif', 'negative': 'Negatif'}
